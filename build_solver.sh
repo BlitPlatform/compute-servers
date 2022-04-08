@@ -14,4 +14,4 @@ debuild -b -uc -us
 
 cd ..
 sudo apt -y remove libcsxcad0 libnf2ff0 libopenems0 libqcsxcad0 openems octave-openems
-sudo apt -y install ./libcsxcad0*.deb ./libnf2ff0*.deb ./libopenems0*.deb ./libqcsxcad0*.deb ./openems*.deb ./octave-openems*.deb
+sudo apt -y install ./libcsxcad0*.deb ./libnf2ff0*.deb ./libopenems0*.deb ./libqcsxcad0*.deb ./openems*.deb ./octave-openems*.deb ./python3-openems*.deb
