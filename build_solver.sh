@@ -47,7 +47,7 @@ Options:
 _setup () {
 	sudo sed -Ei /etc/apt/sources.list -e 's/^# deb-src /deb-src /'
 	sudo apt update
-	sudo apt install -y devscripts
+	sudo apt install -y devscripts equivs
 }
 
 _build () {
