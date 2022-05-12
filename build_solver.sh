@@ -68,6 +68,7 @@ openems (${VERSION}-${OPT_REV}) unstable; urgency=medium\n\n\
  -- Thomas Lepoix <thomas.lepoix@protonmail.ch>  $(date -R)\n\
 "
 
+	sudo mk-build-deps -i
 	debuild -b -uc -us
 }
 
