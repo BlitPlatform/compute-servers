@@ -1,11 +1,12 @@
 #!/bin/bash
 
 OPT_WORKDIR="`pwd`/build_debian"
+OPT_URL='https://github.com/thliebig/openEMS-Project'
 OPT_REV='1'
 
 OPTS=$(getopt \
-	-o h,b:,r:,d:,k \
-	-l help,branch:,revision:,work-dir:,keep,setup \
+	-o h,u:,b:,r:,d:,k \
+	-l help,url:,branch:,revision:,work-dir:,keep,setup \
 	-n "$0" \
 	-- "$@") \
 	|| exit
@@ -14,6 +15,7 @@ while [[ $1 != -- ]]
 do
 	case $1 in
 		-h|--help) OPT_HELP='true' ; shift ;;
+		-u|--url) OPT_URL=$2 ; shift 2 ;;
 		-b|--branch) OPT_BRANCH="-b $2" ; shift 2 ;;
 		-r|--revision) OPT_REV=$2 ; shift 2 ;;
 		-d|--work-dir) OPT_WORKDIR=`realpath -s $2` ; shift 2 ;;
@@ -34,8 +36,11 @@ Description:
 
 Options:
 	-h, --help        Print this help.
-	-b, --branch      Git commit hash of the 'thliebig/openEMS-Project' Github
-	                  repository. Refer to the 'git-clone' manual for more infos.
+	-u, --url         Alternative git repository url. Should only be a fork of
+	                  the 'thliebig/openEMS-Project' Github repository that is
+	                  the default.
+	-b, --branch      Git commit hash of the git repository. Refer to the
+	                  'git-clone' manual for more infos.
 	-r, --revision    Debian packaging revision number.
 	-d, --work-dir    Working directory, defaults to './build_debian'.
 	-k, --keep        Do not clean files after being done.
@@ -55,7 +60,7 @@ _build () {
 	cd "${OPT_WORKDIR}"
 
 	apt source --download-only openems
-	git clone --recursive https://github.com/thliebig/openEMS-Project ${OPT_BRANCH}
+	git clone --recursive ${OPT_URL} ${OPT_BRANCH}
 	cd openEMS-Project
 
 	VERSION="$(git describe --tags --abbrev=0 | cut -b 2-)+git$(git show -s --format=%cd.%h --date=format:'%Y%m%d')"
