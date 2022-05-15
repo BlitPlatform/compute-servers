@@ -52,7 +52,7 @@ Options:
 _setup () {
 	sudo sed -Ei /etc/apt/sources.list -e 's/^# deb-src /deb-src /'
 	sudo apt update
-	sudo apt install -y devscripts equivs
+	sudo apt install -y git python3-setuptools python3-pip devscripts equivs
 }
 
 _build () {
@@ -60,7 +60,7 @@ _build () {
 	cd "${OPT_WORKDIR}"
 
 	apt source --download-only openems
-	git clone --recursive ${OPT_URL} ${OPT_BRANCH}
+	git clone --recursive --remote-submodules ${OPT_URL} ${OPT_BRANCH}
 	cd openEMS-Project
 
 	VERSION="$(git describe --tags --abbrev=0 | cut -b 2-)+git$(git show -s --format=%cd.%h --date=format:'%Y%m%d')"
