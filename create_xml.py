@@ -150,8 +150,8 @@ P2.text = "$"
 ProbeBox = ET.SubElement(Properties, "ProbeBox", Name="port_it1", Type="1", Weight="1", NormDir="2")
 Primitives = ET.SubElement(ProbeBox, "Primitives")
 Box = ET.SubElement(Primitives, "Box", Priority="5")
-P1 = ET.SubElement(Box, "P1", X=str(start_xml[0]), Y=str(start_xml[1]), Z=str((start_xml[2]+stop_xml[2])/2))
-P2 = ET.SubElement(Box, "P2", X=str(stop_xml[0]), Y=str(stop_xml[1]), Z=str((start_xml[2]+stop_xml[2])/2))
+P1 = ET.SubElement(Box, "P1", X=str((start_xml[0]+stop_xml[0])/2), Y=str((start_xml[1]+stop_xml[1])/2), Z=str((start_xml[2]+stop_xml[2])/2))
+P2 = ET.SubElement(Box, "P2", X=str((start_xml[0]+stop_xml[0])/2), Y=str((start_xml[1]+stop_xml[1])/2), Z=str((start_xml[2]+stop_xml[2])/2))
 P1.text = "$"
 P2.text = "$"
 
