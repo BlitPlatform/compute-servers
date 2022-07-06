@@ -3,10 +3,11 @@
 OPT_WORKDIR="`pwd`/build_debian"
 OPT_URL='https://github.com/thliebig/openEMS-Project'
 OPT_REV='1'
+OPT_ENGINE='fastest'
 
 OPTS=$(getopt \
 	-o h,u:,b:,r:,d:,k \
-	-l help,url:,branch:,revision:,work-dir:,keep,setup \
+	-l help,url:,branch:,revision:,work-dir:,keep,benchmark,engine,setup \
 	-n "$0" \
 	-- "$@") \
 	|| exit
@@ -20,6 +21,8 @@ do
 		-r|--revision) OPT_REV=$2 ; shift 2 ;;
 		-d|--work-dir) OPT_WORKDIR=`realpath -s $2` ; shift 2 ;;
 		-k|--keep) OPT_CLEAN='' ; shift ;;
+		--benchmark) OPT_BENCHMARK='true' ; shift ;;
+		-e|--engine) OPT_ENGINE=$3 ; shift ;;
 		--setup) OPT_SETUP='true' ; shift ;;
 		*) echo "Bad option: $1" >&2 ; exit 1 ;;
 	esac
@@ -37,7 +40,7 @@ Description:
 Options:
 	-h, --help        Print this help.
 	-u, --url         Alternative git repository url. Should only be a fork of
-	                  the 'thliebig/openEMS-Project' Github repository that is
+	                  the 'thliebig/openEMS-Project' GitHub repository that is
 	                  the default.
 	-b, --branch      Git commit hash of the git repository. Refer to the
 	                  'git-clone' manual for more infos.
@@ -46,7 +49,29 @@ Options:
 	-k, --keep        Do not clean files after being done.
 	--setup           Enable source APT repositories and install Debian
 	                  packaging tools. Need to be done only once on a machine.
+	--benchmark       Run benchmark on a test case to evaluate solver performance.
+	-e, --engine      Engine to benchmark (fastest/basic/sse/sse-compressed/multithreaded).
 "
+}
+
+_benchmark () {
+	killall openEMS 2>/dev/null
+	rm -rf benchmark_tmp
+	mkdir benchmark_tmp
+	cd benchmark_tmp
+	wget https://raw.githubusercontent.com/BlitPlatform/compute-servers/main/benchmark.xml 2>/dev/null
+	echo "============================================"
+	echo "Running benchmark (this will take 20 sec)..."
+	openEMS benchmark.xml --engine="${OPT_ENGINE}" > benchmark.txt & (sleep 20; killall openEMS)
+	echo "Benchmark complete."
+	echo "============================================"
+	cat benchmark.txt | grep -o -z -P '(?<=enabled ).*\n'
+	echo "============================================"
+	cat benchmark.txt | grep -o -P '(?<=\|\| ).*(?= \|\|)'
+	echo "============================================"
+	rm -rf *
+	cd ..
+	rm -rf benchmark_tmp
 }
 
 _setup () {
@@ -105,6 +130,9 @@ _clean () {
 if [ "${OPT_HELP}" ]
 then
 	_help
+elif [ "${OPT_BENCHMARK}" ]
+then
+	_benchmark
 elif [ "${OPT_SETUP}" ]
 then
 	_setup
@@ -114,4 +142,3 @@ else
 	_install
 	[ "${OPT_CLEAN}" ] && _clean
 fi
-
