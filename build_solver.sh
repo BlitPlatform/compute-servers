@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OPT_WORKDIR="`pwd`/build_debian"
-OPT_URL='https://github.com/thliebig/openEMS-Project'
+OPT_URL='https://github.com/BlitPlatform/openEMS-Project'
 OPT_REV='1'
 OPT_ENGINE='fastest'
 
